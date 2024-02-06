@@ -1,0 +1,17 @@
+trigger: none
+
+stages:
+  - template: /eng/pipelines/templates/stages/archetype-sdk-tests.yml
+    parameters:
+      ServiceDirectory: azidentity
+          CloudConfig:
+            Public:
+              SubscriptionConfigurations:
+                - $(sub-config-azure-cloud-test-resources)
+                - $(sub-config-identity-test-resources)
+      ${{ if contains(variables['Build.DefinitionName'], 'tests-weekly') }}:
+          AdditionalMatrixConfigs:
+            - Name: managed_identity_matrix
+              Path: sdk/azidentity/platform-matrix-integration.json
+              Selection: sparse
+              GenerateVMJobs: true

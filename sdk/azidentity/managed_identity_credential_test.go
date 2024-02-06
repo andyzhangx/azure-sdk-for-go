@@ -474,7 +474,9 @@ func TestManagedIdentityCredential_CreateAccessTokenExpiresOnFail(t *testing.T) 
 func TestManagedIdentityCredential_IMDSLive(t *testing.T) {
 	switch recording.GetRecordMode() {
 	case recording.LiveMode:
-		t.Skip("this test doesn't run in live mode because it can't pass in CI")
+		if os.Getenv("IDENTITY_VM_NAME") == "" {
+			t.Skip("not running on a pipeline VM")
+		}
 	case recording.RecordingMode:
 		// record iff either managed identity environment variable is set, because
 		// otherwise there's no reason to believe the test is running on a VM
@@ -494,7 +496,9 @@ func TestManagedIdentityCredential_IMDSLive(t *testing.T) {
 func TestManagedIdentityCredential_IMDSClientIDLive(t *testing.T) {
 	switch recording.GetRecordMode() {
 	case recording.LiveMode:
-		t.Skip("this test doesn't run in live mode because it can't pass in CI")
+		if os.Getenv("IDENTITY_VM_NAME") == "" {
+			t.Skip("not running on a pipeline VM")
+		}
 	case recording.RecordingMode:
 		if liveManagedIdentity.clientID == "" {
 			t.Skip("MANAGED_IDENTITY_CLIENT_ID isn't set")
@@ -513,7 +517,9 @@ func TestManagedIdentityCredential_IMDSClientIDLive(t *testing.T) {
 func TestManagedIdentityCredential_IMDSResourceIDLive(t *testing.T) {
 	switch recording.GetRecordMode() {
 	case recording.LiveMode:
-		t.Skip("this test doesn't run in live mode because it can't pass in CI")
+		if os.Getenv("IDENTITY_VM_NAME") == "" {
+			t.Skip("not running on a pipeline VM")
+		}
 	case recording.RecordingMode:
 		if liveManagedIdentity.resourceID == "" {
 			t.Skip("MANAGED_IDENTITY_RESOURCE_ID isn't set")
