@@ -116,11 +116,11 @@ extends:
     stages:
       - stage: Build
         variables:
-          - template: /eng/pipelines/templates/variables/globals.yml
+          - template: /eng/pipelines/templates/variables/globals.yml@self
         jobs:
-          - template: /eng/common/pipelines/templates/jobs/archetype-sdk-tests-generate.yml
+          - template: /eng/common/pipelines/templates/jobs/archetype-sdk-tests-generate.yml@self
             parameters:
-              JobTemplatePath: /eng/pipelines/templates/jobs/ci.tests.yml
+              JobTemplatePath: /eng/pipelines/templates/jobs/ci.tests.yml@self
               OsVmImage: azsdk-pool-mms-ubuntu-2004-1espt
               Pool: azsdk-pool-mms-ubuntu-2004-1es-pt
               MatrixConfigs:
@@ -154,7 +154,7 @@ extends:
               os: linux
 
             steps:
-              - template: /eng/common/pipelines/templates/steps/check-spelling.yml
+              - template: /eng/common/pipelines/templates/steps/check-spelling.yml@self
 
               - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
                 displayName: "Component Detection"
@@ -165,9 +165,9 @@ extends:
                   version: '1.22.0'
                 displayName: "Select Go Version"
 
-              - template: ../steps/create-go-workspace.yml
+              - template: /eng/pipelines/templates/steps/create-go-workspace.yml@self
 
-              - template: ../steps/analyze.yml
+              - template: /eng/pipelines/templates/steps/analyze.yml@self
                 parameters:
                   ServiceDirectory: ${{ parameters.ServiceDirectory }}
                   LintVersion: $(GoLintCLIVersion)
@@ -182,13 +182,13 @@ extends:
                   - ${{ if not(contains(parameters.UnsupportedClouds, cloud.key)) }}:
                       - stage: ${{ cloud.key }}
                         variables:
-                          - template: /eng/pipelines/templates/variables/globals.yml
+                          - template: /eng/pipelines/templates/variables/globals.yml@self
                         displayName: Live Test ${{ cloud.key }}
                         dependsOn: []
                         jobs:
-                          - template: /eng/common/pipelines/templates/jobs/archetype-sdk-tests-generate.yml
+                          - template: /eng/common/pipelines/templates/jobs/archetype-sdk-tests-generate.yml@self
                             parameters:
-                              JobTemplatePath: /eng/pipelines/templates/jobs/live.tests.yml
+                              JobTemplatePath: /eng/pipelines/templates/jobs/live.tests.yml@self
                               OsVmImage: azsdk-pool-mms-ubuntu-2004-1espt
                               Pool: azsdk-pool-mms-ubuntu-2004-1es-pt
                               AdditionalParameters:
