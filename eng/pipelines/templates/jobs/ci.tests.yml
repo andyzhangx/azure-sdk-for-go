@@ -18,6 +18,9 @@ parameters:
   - name: DependsOn
     type: object
     default: []
+  - name: UsePlatformContainer
+    type: boolean
+    default: false
 
 jobs:
 - job:
