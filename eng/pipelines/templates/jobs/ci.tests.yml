@@ -12,6 +12,12 @@ parameters:
     default: true
   - name: OSName
     type: string
+  - name: CloudConfig
+    type: object
+    default: {}
+  - name: DependsOn
+    type: object
+    default: []
 
 jobs:
 - job:
