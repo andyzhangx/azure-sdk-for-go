@@ -24,7 +24,7 @@ parameters:
 
 jobs:
 - job:
-  displayName: Build and Test on
+  displayName: Build/Test on
   condition: |
     and(
       succeededOrFailed(),
@@ -34,6 +34,9 @@ jobs:
 
   strategy:
     matrix: $[ ${{ parameters.Matrix }} ]
+
+  dependsOn: 
+   - ${{ parameters.DependsOn }}
 
   pool:
     name: $(Pool)
