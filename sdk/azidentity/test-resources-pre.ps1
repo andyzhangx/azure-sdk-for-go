@@ -31,7 +31,7 @@ $patchVersions = $versions.values | Where-Object { $_.isPreview -eq $null } | Se
 Write-Host "AKS patch versions: $($patchVersions | ConvertTo-Json -Depth 100)"
 $latestAksVersion = $patchVersions | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name | Sort-Object -Descending | Select-Object -First 1
 Write-Host "Latest AKS version: $latestAksVersion"
-$templateFileParameters['latestAksVersion'] = $latestAksVersion
+# $templateFileParameters['latestAksVersion'] = $latestAksVersion
 
 if (!$CI) {
     # TODO: Remove this once auto-cloud config downloads are supported locally
