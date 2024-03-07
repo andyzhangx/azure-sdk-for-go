@@ -11,7 +11,8 @@ Param (
   [string] $PackageName,
   [string] $SourceBranch,
   [string] $DefaultBranch,
-  [string] $ConfigFileDir = ""
+  [string] $ConfigFileDir = "",
+  [bool] $SetReleaseTag = $false
 )
 
 # Submit API review request and return status whether current revision is approved or pending or failed to create review
@@ -34,6 +35,13 @@ function Submit-APIReview($packagename, $filePath, $uri, $apiKey, $apiLabel, $re
     $StringContent.Headers.ContentDisposition = $stringHeader
     $multipartContent.Add($stringContent)
     Write-Host "Request param, label: $apiLabel"
+
+    $releaseTagParam = [System.Net.Http.Headers.ContentDispositionHeaderValue]::new("form-data")
+    $releaseTagParam.Name = "setReleaseTag"
+    $releaseTagParamContent = [System.Net.Http.StringContent]::new($SetReleaseTag)
+    $releaseTagParamContent.Headers.ContentDisposition = $releaseTagParam
+    $multipartContent.Add($releaseTagParamContent)
+    Write-Host "Request param, setReleaseTag: $SetReleaseTag"
 
     if ($releaseStatus -and ($releaseStatus -ne "Unreleased"))
     {
@@ -115,6 +123,23 @@ if ($packages)
         Write-Host "Version: $($version)"
         Write-Host "SDK Type: $($pkgInfo.SdkType)"
         Write-Host "Release Status: $($pkgInfo.ReleaseStatus)"
+
+        # Request to tag a release is triggered after publishing a package so we don't need additional check on API approval status.
+        if ($SetReleaseTag)
+        {
+            Write-Host "Submitting API Review for package $($pkg)"
+            $respCode = Submit-APIReview -packagename $pkg -filePath $pkgPath -uri $APIViewUri -apiKey $APIKey -apiLabel $APILabel -releaseStatus $pkgInfo.ReleaseStatus
+            if ($respCode -eq '200' -or $respCode -eq '201' -or $respCode -eq '202')
+            {
+                Write-Host "API review revision is tagged as released for $($PackageName) and version $($version)."
+            }
+            else
+            {
+                Write-Host "Failed to update and tag API Review for package $($PackageName). Please reach out to Azure SDK engineering systems on teams channel and share this build details."
+                exit 1
+            }
+            exit 0
+        }
 
         # Run create review step only if build is triggered from main branch or if version is GA.
         # This is to avoid invalidating review status by a build triggered from feature branch
