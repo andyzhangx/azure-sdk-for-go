@@ -91,12 +91,17 @@ extends:
   ${{ else }}:
     template: v1/1ES.Unofficial.PipelineTemplate.yml@1ESPipelineTemplates
   parameters:
+    settings:
+      skipBuildTagsForGitHubPullRequests: true
     ${{ if eq(variables['System.TeamProject'], 'internal') }}:
       sdl:
         sourceAnalysisPool:
-          name: azsdk-pool-mms-win-2022-1es-pt
+          name: azsdk-pool-mms-win-2022-general
           image: azsdk-pool-mms-win-2022-1espt
           os: windows
+        sourceRepositoriesToScan:
+          exclude:
+            - repository: azure-sdk-build-tools
         eslint:
           enabled: false
           justificationForDisabling: "ESLint injected task has failures because it uses an old version of mkdirp. We should not fail for tools not controlled by the repo. See: https://dev.azure.com/azure-sdk/internal/_build/results?buildId=3499746&"
@@ -105,7 +110,7 @@ extends:
             enabled: false
             justificationForDisabling: "CodeQL times our pipelines out by running for 2+ hours before being force canceled."
         psscriptanalyzer:
-          enabled: true
+          compiled: true
           break: true
         policy: M365
         credscan:
