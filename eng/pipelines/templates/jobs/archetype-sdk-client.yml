@@ -117,7 +117,7 @@ extends:
         variables:
           - template: /eng/pipelines/templates/variables/globals.yml@self
         jobs:
-          - template: /eng/common/pipelines/templates/jobs/archetype-sdk-tests-generate.yml@self
+          - template: /eng/common/pipelines/templates/jobs/generate-job-matrix.yml@self
             parameters:
               JobTemplatePath: /eng/pipelines/templates/jobs/ci.tests.yml@self
               OsVmImage: azsdk-pool-mms-ubuntu-2004-1espt
@@ -185,7 +185,7 @@ extends:
                         displayName: Live Test ${{ cloud.key }}
                         dependsOn: []
                         jobs:
-                          - template: /eng/common/pipelines/templates/jobs/archetype-sdk-tests-generate.yml@self
+                          - template: /eng/common/pipelines/templates/jobs/generate-job-matrix.yml@self
                             parameters:
                               JobTemplatePath: /eng/pipelines/templates/jobs/live.tests.yml@self
                               OsVmImage: azsdk-pool-mms-ubuntu-2004-1espt
